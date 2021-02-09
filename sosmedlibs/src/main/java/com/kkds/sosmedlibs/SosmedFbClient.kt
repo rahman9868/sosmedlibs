@@ -2,22 +2,20 @@ package com.kkds.sosmedlibs
 
 import android.util.Log
 import com.google.gson.Gson
-import com.sanardev.instagramapijava.InstaClient
 import facebook4j.Facebook
 import facebook4j.FacebookFactory
 import facebook4j.auth.AccessToken
-import facebook4j.conf.ConfigurationContext
 
 class SosmedFbClient {
 
     lateinit var facebookClient: Facebook
     var gson = Gson()
-    fun sosmedFbInstance(appId: String, appSecret: String,commaSeparetedPermissions: String, accessToken: String): Facebook{
-        facebookClient = FacebookFactory().instance
-        facebookClient.setOAuthAppId(appId, appSecret)
-        facebookClient.setOAuthPermissions(commaSeparetedPermissions)
-        facebookClient.oAuthAccessToken = AccessToken(accessToken, null)
-        return facebookClient
+    fun sosmedFbInstance(appId: String, appSecret: String,commaSeparetedPermissions: String, accessToken: String): SosmedFbClient{
+        this.facebookClient = FacebookFactory().instance
+        this.facebookClient.setOAuthAppId(appId, appSecret)
+        this.facebookClient.setOAuthPermissions(commaSeparetedPermissions)
+        this.facebookClient.oAuthAccessToken = AccessToken(accessToken, null)
+        return SosmedFbClient()
     }
 
     fun getUserFbAccount(): FacebookUser{
@@ -59,6 +57,20 @@ class SosmedFbClient {
         var data = tagedMedia.asJSONObject().toString()
         var mdata = gson.fromJson(data, InstagramTaggedMediaObj::class.java)
         return mdata
+    }
+
+    fun getIdMyAccountInstagram(username: String): String?{
+        val urlPageAccount ="me/account"
+        var dataPageAccount = facebookClient.callGetAPI(urlPageAccount)
+        var dataConvert = dataPageAccount.asJSONObject().toString()
+        val mData = gson.fromJson(dataConvert, DataPageAccount::class.java)
+        val idPageAccount = mData.data.find { it.name == username }
+        if(idPageAccount != null){
+            val urlGetIdInsta = "${idPageAccount.id}?fields=instagram_business_account"
+            val dataInstagramAccount = facebookClient.callGetAPI(urlGetIdInsta).asJSONObject().toString()
+            val jsonDataInstaAccount = gson.fromJson(dataInstagramAccount, DataInstagramAccount::class.java)
+            return jsonDataInstaAccount.instagram_business_account.id
+        }else return null
     }
 
 

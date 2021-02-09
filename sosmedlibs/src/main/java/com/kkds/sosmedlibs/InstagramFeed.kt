@@ -130,3 +130,30 @@ data class HashtagId(
 data class DataHashtag(
         val id: String
 )
+
+data class DataPageAccount(
+        val data: List<PageAccount>
+)
+
+data class PageAccount(
+        val access_token: String,
+        val category: String,
+        val category_list: List<Category>,
+        val name: String,
+        val id: String,
+        val task: List<String>
+)
+
+data class Category(
+        val id: String,
+        val name: String
+)
+
+data class DataInstagramAccount(
+        val instagram_business_account: InstagramBusinessAccount,
+        val id: String
+)
+
+data class InstagramBusinessAccount(
+        val id: String
+)
