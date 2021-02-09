@@ -24,6 +24,7 @@ import java.net.URLDecoder
 public class SosmedIgClient {
 
 
+
     lateinit var instaClient: InstaClient
 
     fun SosmedIgClient(context: Context, username: String, password: String){
